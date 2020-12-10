@@ -14,7 +14,6 @@
 
 #include "get_next_line_bonus.h"
 
-
 int		clear(t_file *sfile, int status)
 {
 	t_segment *seg;

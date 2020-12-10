@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
 
-# define GET_NEXT_LINE_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stdlib.h>
 
@@ -37,6 +37,7 @@ typedef struct	s_file
 	int				status;
 	t_segment		*fseg;
 	t_segment		*lseg;
+	struct s_file	*current;
 	struct s_file	*next;
 }				t_file;
 
