@@ -14,7 +14,30 @@
 
 #include "get_next_line_bonus.h"
 
-int		clear(t_file *sfile, int status)
+void	*clear_file(t_file **sfile_pt, t_file *sfile)
+{
+	t_file *wfile;
+	t_file *pfile;
+
+	wfile = *sfile_pt;
+	pfile = NULL;
+	while (NULL != wfile)
+	{
+		if (sfile == wfile)
+		{
+			if (NULL == pfile)
+				*sfile_pt = wfile->next;
+			else
+				pfile->next = wfile->next;
+			free(wfile);
+			break ;
+		}
+		wfile = wfile->next;
+	}
+	return (NULL);
+}
+
+int		clear(t_file **sfile_pt, t_file *sfile, int status)
 {
 	t_segment *seg;
 	t_segment *nseg;
@@ -29,10 +52,11 @@ int		clear(t_file *sfile, int status)
 		seg = nseg;
 		sfile->fseg = seg;
 	}
-	if (ERROR == status)
-		return (ERROR);
-	if (!seg)
-		return (0);
+	if (ERROR == status || !seg)
+	{
+		clear_file(sfile_pt, sfile);
+		return (ERROR == status) ? ERROR : END;
+	}
 	sfile->status = seg->status;
 	return (1);
 }

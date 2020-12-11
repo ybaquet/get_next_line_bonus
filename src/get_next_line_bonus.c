@@ -57,7 +57,7 @@ void	supply_str(int status, t_segment *seg, char *str)
 	*str = 0;
 }
 
-int		process_line(t_file *sfile, char **line)
+int		process_line(t_file **sfile_pt, t_file *sfile, char **line)
 {
 	int			len;
 	t_segment	*seg;
@@ -65,7 +65,7 @@ int		process_line(t_file *sfile, char **line)
 	int			status;
 
 	if (ERROR == sfile->status)
-		return (clear(sfile, ERROR));
+		return (clear(sfile_pt, sfile, ERROR));
 	len = 0;
 	status = CONTINUE;
 	seg = sfile->fseg;
@@ -77,37 +77,36 @@ int		process_line(t_file *sfile, char **line)
 	}
 	status = CONTINUE;
 	if (!(str = (char *)malloc(sizeof(char) * (len + 1))))
-		return (clear(sfile, ERROR));
+		return (clear(sfile_pt, sfile, ERROR));
 	*line = str;
 	seg = sfile->fseg;
 	supply_str(status, seg, str);
-	return (clear(sfile, CONTINUE));
+	return (clear(sfile_pt, sfile, CONTINUE));
 }
 
 void	get_file(t_file **sfile_pt, int fd)
 {
-	t_file			*wfile;
+	t_file			*wf;
 
-	wfile = *sfile_pt;
-	while (wfile && fd != (wfile)->fd)
-		wfile = wfile->next;
-	if ((!wfile || fd != wfile->fd)
-			&& (wfile = (t_file *)malloc(sizeof(t_file))))
+	wf = *sfile_pt;
+	while (wf && fd != (wf)->fd)
+		wf = wf->next;
+	if ((!wf || fd != wf->fd) && (wf = (t_file *)malloc(sizeof(t_file))))
 	{
-		wfile->fd = fd;
-		wfile->fseg = NULL;
-		wfile->lseg = NULL;
-		wfile->status = CONTINUE;
-		wfile->next = (*sfile_pt) ? (*sfile_pt)->next : NULL;
+		wf->fd = fd;
+		wf->fseg = NULL;
+		wf->lseg = NULL;
+		wf->status = CONTINUE;
+		wf->next = (*sfile_pt) ? (*sfile_pt)->next : NULL;
 		if ((!*sfile_pt))
 		{
-			(*sfile_pt) = wfile;
+			(*sfile_pt) = wf;
 			(*sfile_pt)->next = NULL;
 		}
 		else
-			(*sfile_pt)->next = wfile;
+			(*sfile_pt)->next = wf;
 	}
-	(*sfile_pt)->current = wfile;
+	(*sfile_pt)->current = wf;
 }
 
 int		get_next_line(int fd, char **line)
@@ -117,20 +116,20 @@ int		get_next_line(int fd, char **line)
 	int				len;
 
 	get_file(&sfile, fd);
-	if (!sfile || 0 >= BUFFER_SIZE || 0 > fd || 1023 < fd)
+	if (!sfile || 0 >= BUFFER_SIZE || 0 > fd)
 		return (ERROR);
 	while (CONTINUE == sfile->current->status)
 	{
 		if (!(str = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
-			return (clear(sfile, ERROR));
+			return (clear(&sfile, sfile->current, ERROR));
 		if ((len = read(sfile->current->fd, str, BUFFER_SIZE)) > 0)
 		{
 			if (ERROR == process_buffer(sfile->current, str, len))
-				return (clear(sfile->current, ERROR));
+				return (clear(&sfile, sfile->current, ERROR));
 		}
 		else
 			sfile->current->status = (0 == len) ? END : ERROR;
 		free(str);
 	}
-	return (process_line(sfile->current, line));
+	return (process_line(&sfile, sfile->current, line));
 }

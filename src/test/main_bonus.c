@@ -17,7 +17,7 @@ void gnl(int fd, int r, char * s)
 		free(line);
 }
 
-int		main()
+int		main_()
 {
 	int fd[4];
 
