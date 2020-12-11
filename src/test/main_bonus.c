@@ -17,6 +17,101 @@ void gnl(int fd, int r, char * s)
 		free(line);
 }
 
+int test3() {
+	int             fd;
+	int             i;
+	int             j;
+	char    		*line = 0;
+//	char			*lineadress[66];
+
+	j = 1;
+	printf("\n==========================================\n");
+	printf("============= TEST 7 : Marge =============\n");
+	printf("==========================================\n\n");
+
+	int fd2;
+
+	if (!(fd = open("/Users/yde-mont/Desktop/ECLIPSE/workspace/LIBFT/get_next_line/files_gnl/mix_marge1", O_RDONLY)))
+	{
+		printf("\nError in open\n");
+		return (0);
+	}
+	if (!(fd2 = open("/Users/yde-mont/Desktop/ECLIPSE/workspace/LIBFT/get_next_line/files_gnl/mix_marge2", O_RDONLY)))
+	{
+		printf("\nError in open\n");
+		return (0);
+	}
+	while (j < 8)
+	{
+		if ((i = get_next_line(fd, &line)) > 0)
+			printf("1 %d, %s\n", j, line);
+		free(line);
+		j++;
+	}
+	while (j < 13)
+	{
+		if ((i = get_next_line(fd2, &line)) > 0)
+			printf("%s\n", line);
+		free(line);
+		j++;
+	}
+	if ((i = get_next_line(fd, &line)) > 0)
+		printf("2 %d, %s\n", j, line);
+	free(line);
+	j++;
+	if ((i = get_next_line(fd2, &line)) > 0)
+		printf("3 %d, %s\n", j, line);
+	free(line);
+	j++;
+	if ((i = get_next_line(fd2, &line)) > 0)
+		printf("4 %d, %s\n", j, line);
+	free(line);
+	j++;
+	if ((i = get_next_line(fd, &line)) > 0)
+		printf("5 %d, %s\n", j, line);
+	free(line);
+	j++;
+	if ((i = get_next_line(fd2, &line)) > 0)
+		printf("6 %d, %s\n", j, line);
+	free(line);
+	j++;
+	if ((i = get_next_line(fd, &line)) > 0)
+		printf("7 %d, %s\n", j, line);
+	free(line);
+	j++;
+	while (j < 23)
+	{
+		if ((i = get_next_line(fd2, &line)) > 0)
+			printf("8 %d, %s\n", j, line);
+		free(line);
+		j++;
+	}
+	get_next_line(fd2, &line);
+	printf("9 %d, %s\n", j, line);
+	free(line);
+	j++;
+	while (j < 25)
+	{
+		if ((i = get_next_line(fd, &line)) > 0)
+			printf("a %d, %s\n", j, line);
+		free(line);
+		j++;
+	}
+	get_next_line(fd, &line);
+	printf("b %d, %s\n", j, line);
+	free(line);
+	close(fd);
+	close(fd2);
+
+	if (i == -1)
+		printf ("\nError in Fonction - Returned -1\n");
+	else if (j == 25)
+		printf("\nRight number of lines\n");
+	else if (j != 25)
+		printf("\nNot Good - Wrong Number Of Lines\n");
+return (0);
+}
+
 int		main_()
 {
 	int fd[4];

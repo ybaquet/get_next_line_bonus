@@ -6,7 +6,7 @@
 /*   By: yde-mont <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/09 09:19:42 by yde-mont          #+#    #+#             */
-/*   Updated: 2020/12/09 09:20:15 by yde-mont         ###   ########lyon.fr   */
+/*   Updated: 2020/12/11 15:15:06 by yde-mont         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,27 @@
 
 void	*clear_file(t_file **sfile_pt, t_file *sfile)
 {
-	t_file *wfile;
-	t_file *pfile;
+	t_file	*wfile;
 
 	wfile = *sfile_pt;
-	pfile = NULL;
-	while (NULL != wfile)
-	{
-		if (sfile == wfile)
+	if (sfile == *sfile_pt)
+		*sfile_pt = NULL;
+	else
+		while (wfile)
 		{
-			if (NULL == pfile)
-				*sfile_pt = wfile->next;
-			else
-				pfile->next = wfile->next;
-			free(wfile);
-			break ;
+			if (wfile->next == sfile)
+			{
+				wfile->next = sfile->next;
+				break ;
+			}
+			wfile = wfile->next;
 		}
-		wfile = wfile->next;
-	}
+	free(sfile);
+	sfile = NULL;
 	return (NULL);
 }
 
-int		clear(t_file **sfile_pt, t_file *sfile, int status)
+int		clear(t_file *sfile, int status)
 {
 	t_segment *seg;
 	t_segment *nseg;
@@ -53,10 +52,7 @@ int		clear(t_file **sfile_pt, t_file *sfile, int status)
 		sfile->fseg = seg;
 	}
 	if (ERROR == status || !seg)
-	{
-		clear_file(sfile_pt, sfile);
 		return (ERROR == status) ? ERROR : END;
-	}
 	sfile->status = seg->status;
 	return (1);
 }

@@ -44,7 +44,7 @@ typedef struct	s_file
 int				indexof(char *str, char c, int start);
 char			*mod_substr(char *s, int start, int len);
 int				mod_strlen(char *str);
-int				clear(t_file **sfile_pt, t_file *sfile, int status);
+int				clear(t_file *sfile, int status);
 void			*clear_file(t_file **sfile_pt, t_file *sfile);
 int				get_next_line(int fd, char **line);
 
